@@ -51,3 +51,14 @@ contribute, including reporting issues, requesting features, asking or answering
 questions, and making PRs.
 
 [contrib]: https://palletsprojects.com/contributing/
+
+
+
+## Diagramas de secuencia - Flaskr
+
+En esta práctica he hecho cuatro diagramas de secuencia para mostrar cómo funciona el login de Flaskr y qué pasa cuando hay algún error.
+
+- [Login correcto](diagrams/login_correcto.png): El usuario pone sus datos correctamente y consigue iniciar sesión.
+- [Usuario incorrecto](diagrams/login_usuario_incorrecto.drawio.png): El usuario no existe y Flaskr muestra un error.
+- [Contraseña incorrecta](diagrams/login_contrasena_incorrecta.drawio.png): El usuario existe, pero la contraseña no es correcta.
+- [Servidor no disponible](diagrams/login_servidor_no_disponible.drawio.drawio.png): El servidor está apagado y el navegador no puede abrir Flaskr.
