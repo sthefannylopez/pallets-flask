@@ -36,6 +36,59 @@ def test_register_validate_input(client, username, password, message):
     assert message in response.data
 
 
+def test_register_password_too_short(client, app):
+    # Intento registrar un usuario con una contraseña de 7 caracteres.
+    response = client.post(
+        "/auth/register",
+        data={"username": "usuario7", "password": "abcdefg"},
+    )
+
+    # Compruebo que el programa muestra el mensaje de error.
+    assert b"Password must be at least 8 characters." in response.data
+
+    # Compruebo en la base de datos que el usuario no se ha creado.
+    with app.app_context():
+        user = get_db().execute(
+            "SELECT id FROM user WHERE username = ?", ("usuario7",)
+        ).fetchone()
+        assert user is None
+
+
+def test_register_password_8_characters(client, app):
+    # Pruebo una contraseña que tiene exactamente 8 caracteres.
+    response = client.post(
+        "/auth/register",
+        data={"username": "usuario8", "password": "abcdefgh"},
+    )
+
+    # Compruebo que el registro se acepta y me lleva al login.
+    assert response.headers["Location"] == "/auth/login"
+
+    # Compruebo que el usuario se ha guardado en la base de datos.
+    with app.app_context():
+        user = get_db().execute(
+            "SELECT id FROM user WHERE username = ?", ("usuario8",)
+        ).fetchone()
+        assert user is not None
+
+
+def test_register_password_9_characters(client, app):
+    # Pruebo una contraseña de 9 caracteres, que supera el mínimo.
+    response = client.post(
+        "/auth/register",
+        data={"username": "usuario9", "password": "abcdefghi"},
+    )
+
+    # Compruebo que el registro se acepta y redirige al login.
+    assert response.headers["Location"] == "/auth/login"
+
+    # Compruebo que el nuevo usuario existe en la base de datos.
+    with app.app_context():
+        user = get_db().execute(
+            "SELECT id FROM user WHERE username = ?", ("usuario9",)
+        ).fetchone()
+        assert user is not None
+
 def test_login(client, auth):
     # test that viewing the page renders without template errors
     assert client.get("/auth/login").status_code == 200
